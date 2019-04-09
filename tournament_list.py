@@ -2,8 +2,10 @@
 
 import pandas as pd
 
-### results of running  get_tournament_list(id_list) from tournaments.py
-### where id_list is list of the rannge of 000-999
+### results of running  get_tournament_list(id_list) from tournaments.py 
+### on 2019-04-09 where id_list is list of the rannge of 000-999
+### May want to occasionally check for new 'tid's, or check for Current 
+### Tournament 'tid' in tournament_list.py data and append as needed
 pga_tournament_list = [['002', 'Desert Classic', '2019'], 
 	                   ['003', 'Waste Management Phoenix Open', '2019'], 
 	                   ['004', 'Farmers Insurance Open', '2019'], 
