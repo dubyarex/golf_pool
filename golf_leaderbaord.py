@@ -5,24 +5,37 @@ from pprint import pprint
 from openpyxl.utils import get_column_letter, column_index_from_string
 from openpyxl.styles import Alignment, Font, Protection
 
-res = requests.get('https://golf.jacoduplessis.co.za/?format=json')
+### Have user choose which tournament to update
+# tournament_name = input('Enter Desired Tournament: ')
+
+### Placeholder while testing code
+tid = '014'  # The Masters  'tid' for PGA.com
+# PGA.com URL given a tournament ID - 'tid'
+url = 'https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(tid)
+res = requests.get(url)
 
 ### parses json code into python data format (Dictionaries and Lists)
 data = json.loads(res.text)
 
-### Get list of available tournaments
-tournament_list = []
-for leaderboard in data['Leaderboards']:
-	tournament_list.append(leaderboard['Tournament'])
-
-print(tournament_list)
-
-### Have user choose which tournament to update
-# tournament_name = input('Enter Desired Tournament: ')
-### Placeholder while testing code
-tournament_name = 'Valero Texas Open'
+leaderboard = data['leaderboard']
+### List of Desired tournament detail fields
+# print(leaderboard.key())  # To see all possible fields
 
 
+leaderboard_headers = ['tournament_id', 'tournament_name', 'stat_date', 'end_date', 'is_stated', 'is_finished', 'current_round', 'round_state']
+# leaderboard['courses'][0]
+course_sub_headers = ['course_id', 'course_name', 'par_in', 'par_out', 'par_total']
+# leaderboard['cut_line']
+cutline_sub_headers = ['cut_count', 'cut_line_score']
+tournament_headers = leaderboard_headers + course_sub_headers + cutline_sub_headers
+pprint(tournament_headers)
+tournament_details = {}
+
+
+
+
+
+'''
 ### Get Dictionary for Desired Tournament
 for leaderboard in data['Leaderboards']:
 	if leaderboard['Tournament'] == tournament_name:
@@ -107,3 +120,4 @@ sheet.column_dimensions['B'].width = 20
 wb.save('leader_test_2019.xlsx')
 
 pprint(player_data[70])
+'''
