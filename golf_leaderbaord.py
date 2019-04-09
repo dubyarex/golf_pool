@@ -22,22 +22,24 @@ res = requests.get(url)
 data = json.loads(res.text)
 
 leaderboard = data['leaderboard']
-### List of Desired tournament detail fields
+
+   ######## Tournament Detials ########
+
+### List of desired tournament detail fields
 # print(leaderboard.key())  # To see all possible fields
-
-
 leaderboard_headers = ['tournament_id', 'tournament_name', 'start_date', 
                        'end_date', 'is_started', 'is_finished', 'current_round', 
                        'round_state']
                        ### round_state -- 'Official', 'Groupings Official', '--Active??--'
 
-#### leaderboard['courses'][0]
+### Sub-Headers to desired tournament detail fields
+### leaderboard['courses'][0]
 course_sub_headers = ['course_id', 'course_name', 'par_in', 'par_out', 'par_total']
-#### leaderboard['cut_line']
+### leaderboard['cut_line']
 cutline_sub_headers = ['cut_count', 'cut_line_score']
-#### combine all headers and sub-headers
+### combine all headers and sub-headers
 
-### Create simplified Dictionary of tournament details
+### Create simplified Dictionary of desired tournament details
 tournament_details = {}
 ### Add leaderboard_headers
 for i in leaderboard_headers:
@@ -53,6 +55,47 @@ tournament_headers = tournament_details.keys()
 tname = tournament_details['tournament_name']
 tyear = tournament_details['start_date'][:4]
 
+   ######## ################## ########
+
+
+
+   ######## Player Detials ########
+
+print(leaderboard['players'][0]['player_bio']['last_name'])
+
+### List of desired player detail fields
+player_headers = ['current_position', 'start_position', 'status', 'thru', 'current_round', 'course_hole', 'today', 'total', 'total_strokes']
+### leaderboard['players'][i]['player_bio']
+bio_sub_headers = ['first_name', 'short_name', 'last_name']
+### leaderboard['players'][i]['rounds']
+rounds_sub_headers = ['round_1', 'round_2', 'round_3', 'round_4']
+
+### Create simplified list of Dictionary of player details
+player_list = []
+### create custom 'short_name' == short_name + '. ' + last_name
+for player in leaderboard['players']:
+	player_details = {}
+	for i in player_headers:
+		player_details[i] = player[i]
+	for i in bio_sub_headers:
+		player_details[i] = player['player_bio'][i]
+	player_list.append(player_details)
+
+	### append to player_list as a dictionary
+	
+
+
+	### create custom 'short_name' == short_name + '. ' + last_name
+	### append to player_list as a dictionary
+
+	
+
+pprint(player_list)
+print(len(player_list))
+
+   ######## ############## ########
+
+'''
 excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
 details_tab = 'Details'
 raw_data_tab = 'Raw Data'
@@ -84,6 +127,7 @@ for head in tournament_headers:
 
 
 wb.save(excel_filename)
+'''
 
 '''
 ### Get Dictionary for Desired Tournament
