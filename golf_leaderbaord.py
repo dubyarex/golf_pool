@@ -35,13 +35,13 @@ for player in player_data:
 	player_list.append(player['Name'])
 
 player_count = len(player_list)
-column_titles = ['Name', 'Short Name', 'Today', 'Round 1', 'Round 2', 'Round 3', 'Round 4']
+column_titles = ['Name', 'Short Name', 'CurrentPosition', 'Total', 'After', 'Today', 'Round 1', 'Round 2', 'Round 3', 'Round 4', 'TotalStrokes']
 col_count = len(column_titles)
 
 
 ### Check for existing file and open or create new file
 if os.path.isfile('leader_test_2019.xlsx'):
-	wb = openpyxl.load_workbook('leader_test.xlsx')
+	wb = openpyxl.load_workbook('leader_test_2019.xlsx')
 ### Create a new excel file
 else:
 	wb = openpyxl.Workbook()
@@ -52,7 +52,7 @@ else:
 sheet = wb['Raw Data']
 
 ### Creating Title for Data Table
-sheet.merge_cells('A1:' + get_column_letter(col_count) + '1')
+# sheet.merge_cells('A1:' + get_column_letter(col_count) + '1')
 sheet['A1'] = tournament_name
 sheet['A1'].font = Font(size=24, bold=True, underline="single")
 sheet['A1'].alignment = Alignment(horizontal='center', vertical='center')
@@ -76,10 +76,13 @@ for player in player_data:
 		player[round_num[1]] = player['Rounds'][round_num[0]]
 
 ### Iterate through players and write data to excel sheet
-# row_num = 3
-# for player in player_data:
-# 	col_num = 1
-# 	for col in column_titles:
+row_num = 3
+for player in player_data:
+	col_num = 1
+	for col in column_titles:
+		sheet.cell(row=row_num, column=col_num).value = player[col]
+		col_num += 1
+	row_num += 1
 
 
 
@@ -103,4 +106,4 @@ sheet.column_dimensions['B'].width = 20
 
 wb.save('leader_test_2019.xlsx')
 
-pprint(player_data[0])
+pprint(player_data[70])
