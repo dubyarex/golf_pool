@@ -61,14 +61,17 @@ tyear = tournament_details['start_date'][:4]
 
    ######## Player Detials ########
 
-print(leaderboard['players'][0]['player_bio']['last_name'])
-
 ### List of desired player detail fields
-player_headers = ['current_position', 'start_position', 'status', 'thru', 'current_round', 'course_hole', 'today', 'total', 'total_strokes']
+player_headers = ['current_position', 'start_position', 'status', 'thru', 
+                  'current_round', 'course_hole', 'today', 'total', 
+                  'total_strokes']
 ### leaderboard['players'][i]['player_bio']
 bio_sub_headers = ['first_name', 'short_name', 'last_name']
 ### leaderboard['players'][i]['rounds']
-rounds_sub_headers = ['round_1', 'round_2', 'round_3', 'round_4']
+rounds_sub_headers = [['r1_strokes', 'r1_tee_time'], 
+                      ['r2_strokes', 'r2_tee_time'], 
+                      ['r3_strokes', 'r3_tee_time'],
+                      ['r4_strokes', 'r4_tee_time']]
 
 ### Create simplified list of Dictionary of player details
 player_list = []
@@ -79,19 +82,21 @@ for player in leaderboard['players']:
 		player_details[i] = player[i]
 	for i in bio_sub_headers:
 		player_details[i] = player['player_bio'][i]
+	count = 0
+	for i in rounds_sub_headers:
+		player_details[i[0]] = player['rounds'][count]['strokes']
+		player_details[i[1]] = player['rounds'][count]['tee_time']
+		count += 1
+	### create custom 'short_name' == short_name + '. ' + last_name
+	player_details['short_name'] = player['player_bio']['short_name'] + '. ' + player['player_bio']['last_name']
+
 	player_list.append(player_details)
 
 	### append to player_list as a dictionary
-	
 
 
-	### create custom 'short_name' == short_name + '. ' + last_name
-	### append to player_list as a dictionary
+player_columns = player_list[0].keys()
 
-	
-
-pprint(player_list)
-print(len(player_list))
 
    ######## ############## ########
 
