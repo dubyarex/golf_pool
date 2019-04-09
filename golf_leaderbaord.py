@@ -89,6 +89,9 @@ for player in leaderboard['players']:
 		count += 1
 	### create custom 'short_name' == short_name + '. ' + last_name
 	player_details['short_name'] = player['player_bio']['short_name'] + '. ' + player['player_bio']['last_name']
+	player_details['name'] = player['player_bio']['first_name'] + ' ' + player['player_bio']['last_name']
+
+	### Could add code to adjust scores for players with status = ['wd', 'cut', 'mdf']
 
 	player_list.append(player_details)
 
@@ -97,10 +100,26 @@ for player in leaderboard['players']:
 
 player_columns = player_list[0].keys()
 
+raw_data_columns = ['name', 
+                    'short_name', 
+                    'current_position', 
+                    'total', 
+                    'thru', 
+                    'today', 
+                    'r1_strokes', 
+                    'r2_strokes', 
+                    'r3_strokes', 
+                    'r4_strokes', 
+                    'total_strokes', 
+                    'current_round', 
+                    'status', 
+                    'r1_tee_time', 
+                    'r2_tee_time', 
+                    'r3_tee_time', 
+                    'r4_tee_time']
 
    ######## ############## ########
 
-'''
 excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
 details_tab = 'Details'
 raw_data_tab = 'Raw Data'
@@ -122,6 +141,7 @@ else:
 	sheet.title = raw_data_tab
 	wb.create_sheet(details_tab)
 
+### Add tournament details to Detials sheet
 sheet = wb[details_tab]
 
 row_num = 1
@@ -130,9 +150,22 @@ for head in tournament_headers:
 	sheet.cell(row=row_num, column=2).value = tournament_details[head]
 	row_num += 1
 
+### Add player data to Raw Data sheet
+sheet = wb[raw_data_tab]
+
+### Header Row
+for col, header in enumerate(raw_data_columns):
+	sheet.cell(row=1, column=(col + 1)).value = header
+
+for row, player in enumerate(player_list):
+	for col, header in enumerate(raw_data_columns):
+		sheet.cell(row=(row+2), column=(col+1)).value = player[header]
+
+
+
 
 wb.save(excel_filename)
-'''
+
 
 '''
 ### Get Dictionary for Desired Tournament
