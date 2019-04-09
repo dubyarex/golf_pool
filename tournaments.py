@@ -10,7 +10,7 @@ def generate_possible_ids():
 	
 
 def get_tournament_list(id_list):
-	tourney_list = []
+	tourney_list = ['tid', 'tname', 'tyear', 'tcourse', 'tpar_total']
 	for id in id_list:
 		res = requests.get('https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(id))
 		try:
@@ -27,5 +27,3 @@ possible_ids = generate_possible_ids()
 
 # t_list = get_tournament_list(tournament_list.tlist_df['tid'])
 
-print(get_tournament_list(tournament_list.tlist_df['tid'][:5]))
-# if t_list == tournament_list.pga_id_list

@@ -2,6 +2,8 @@
 
 import pandas as pd
 
+### results of running  get_tournament_list(id_list) from tournaments.py
+### where id_list is list of the rannge of 000-999
 pga_tournament_list = [['002', 'Desert Classic', '2019'], 
 	                   ['003', 'Waste Management Phoenix Open', '2019'], 
 	                   ['004', 'Farmers Insurance Open', '2019'], 
@@ -58,6 +60,10 @@ pga_tournament_list = [['002', 'Desert Classic', '2019'],
 	                   ['526', 'Tiger vs. Phil', '2019'], 
 	                   ['650', "Olympic Women's Golf Competition", '2016']]
 
+### transform list of list into a pandas DataFrame
+### Default numeric indexing
+# gittlist_df = pd.DataFrame(pga_tournament_list, columns=['tid', 'tname', 'tyear'])
 
-tlist_df = pd.DataFrame(pga_tournament_list, columns=['tid', 'tname', 'tyear'])
+### Use below to Index by 'tid'
+tlist_df = pd.DataFrame(pga_tournament_list, columns=['tid', 'tname', 'tyear']).set_index('tid')
 
