@@ -69,3 +69,17 @@ pga_tournament_list = [['002', 'Desert Classic', '2019'],
 ### Use below to Index by 'tid'
 tlist_df = pd.DataFrame(pga_tournament_list, columns=['tid', 'tname', 'tyear']).set_index('tid')
 
+
+##### examples of how to accest data in the tlist_df DataFrame #####
+
+### Returns 'tname' for given 'tid' <'014'>
+# print(tlist_df.loc['014', 'tname'])
+# print(tlist_df.at['014', 'tname'])
+
+### Return 'tid' given 'tname' value <'The Master'>
+# for d in tlist_df.index:
+# 	if tlist_df.at[d , 'tname'] == 'The Masters':
+# 		print(d)
+
+### Return row(s) given 'tname' value <'The Master'>
+# print(tlist_df.loc[tlist_df['tname'] == 'The Masters'])
