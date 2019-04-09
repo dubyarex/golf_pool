@@ -5,6 +5,10 @@ from pprint import pprint
 from openpyxl.utils import get_column_letter, column_index_from_string
 from openpyxl.styles import Alignment, Font, Protection
 
+### Store pool excel workbook here
+excel_folder = 'C:\\Stuff\\pools\\Golf\\'
+
+
 ### Have user choose which tournament to update
 # tournament_name = input('Enter Desired Tournament: ')
 
@@ -22,18 +26,64 @@ leaderboard = data['leaderboard']
 # print(leaderboard.key())  # To see all possible fields
 
 
-leaderboard_headers = ['tournament_id', 'tournament_name', 'stat_date', 'end_date', 'is_stated', 'is_finished', 'current_round', 'round_state']
-# leaderboard['courses'][0]
+leaderboard_headers = ['tournament_id', 'tournament_name', 'start_date', 
+                       'end_date', 'is_started', 'is_finished', 'current_round', 
+                       'round_state']
+                       ### round_state -- 'Official', 'Groupings Official', '--Active??--'
+
+#### leaderboard['courses'][0]
 course_sub_headers = ['course_id', 'course_name', 'par_in', 'par_out', 'par_total']
-# leaderboard['cut_line']
+#### leaderboard['cut_line']
 cutline_sub_headers = ['cut_count', 'cut_line_score']
-tournament_headers = leaderboard_headers + course_sub_headers + cutline_sub_headers
-pprint(tournament_headers)
+#### combine all headers and sub-headers
+
+### Create simplified Dictionary of tournament details
 tournament_details = {}
+### Add leaderboard_headers
+for i in leaderboard_headers:
+	tournament_details[i] = leaderboard[i]
+### Add course_sub_headers
+for i in course_sub_headers:
+	tournament_details[i] = leaderboard['courses'][0][i]
+### Add cutline_sub_headers
+for i in cutline_sub_headers:
+	tournament_details[i] = leaderboard['cut_line'][i]
+
+tournament_headers = tournament_details.keys()
+tname = tournament_details['tournament_name']
+tyear = tournament_details['start_date'][:4]
+
+excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
+details_tab = 'Details'
+raw_data_tab = 'Raw Data'
+
+### Check if file and sheet exist. If no, create file and/or sheet as needed
+if os.path.isfile(excel_filename):
+	wb = openpyxl.load_workbook(excel_filename)
+	### Check if sheets exists
+	if raw_data_tab not in wb.sheetnames:
+		wb.create_sheet(raw_data_tab)
+	if details_tab not in wb.sheetnames:
+		wb.create_sheet(details_tab)
+
+### Create a new excel file
+else:
+	wb = openpyxl.Workbook()
+	sheet = wb.active
+	### Rename sheet
+	sheet.title = raw_data_tab
+	wb.create_sheet(details_tab)
+
+sheet = wb[details_tab]
+
+row_num = 1
+for head in tournament_headers:
+	sheet.cell(row=row_num, column=1).value = head
+	sheet.cell(row=row_num, column=2).value = tournament_details[head]
+	row_num += 1
 
 
-
-
+wb.save(excel_filename)
 
 '''
 ### Get Dictionary for Desired Tournament
