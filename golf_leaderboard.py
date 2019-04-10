@@ -150,6 +150,9 @@ raw_data_columns = ['name',
 excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
 details_tab = 'Details'
 raw_data_tab = 'Raw Data'
+template_filename = 'Leaderboard_Template.xlsx'
+print('Current Dir: {}'.format(os.getcwd()))
+print(excel_filename)
 
 ### Check if file and sheet exist. If no, create file and/or sheet as needed
 if os.path.isfile(excel_filename):
@@ -162,11 +165,8 @@ if os.path.isfile(excel_filename):
 
 ### Create a new excel file
 else:
-	wb = openpyxl.Workbook()
-	sheet = wb.active
-	### Rename sheet
-	sheet.title = raw_data_tab
-	wb.create_sheet(details_tab)
+	wb = openpyxl.load_workbook(template_filename)
+
 
 ### Add tournament details to Details sheet
 sheet = wb[details_tab]
@@ -188,10 +188,18 @@ for row, player in enumerate(player_list):
 	for col, header in enumerate(raw_data_columns):
 		sheet.cell(row=(row+2), column=(col+1)).value = player[header]
 
+### Find Sheet Index of Results Tab and make it the active sheet
+for i, sht_name in enumerate(wb.sheetnames):
+	if sht_name == 'Results':
+		wb.active = i
 
-
-
+### Set all other sheets to not-active
+for sheet in wb.sheetnames:
+	if sheet != 'Results':
+		wb[sheet].sheet_view.tabSelected = False
+	
 wb.save(excel_filename)
+print('Data written to: {}'.format(excel_filename))
 
 
 '''
