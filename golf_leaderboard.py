@@ -103,6 +103,7 @@ for player in leaderboard['players']:
 	player_details['short_name'] = player['player_bio']['short_name'] + '. ' + player['player_bio']['last_name']
 	player_details['name'] = player['player_bio']['first_name'] + ' ' + player['player_bio']['last_name']
 
+	### append to player_list as a dictionary
 	player_list.append(player_details)
 
 	### Could add code to adjust scores for players with status = ['wd', 'cut', 'mdf']
@@ -121,7 +122,7 @@ for player in leaderboard['players']:
 		### adjust scores for Made Cut, DNF
 		if player['status'] == 'mdf':
 			player['r4_strokes'] = penalty_score
-	### append to player_list as a dictionary
+	
 
 
 player_columns = player_list[0].keys()
@@ -189,12 +190,12 @@ for row, player in enumerate(player_list):
 
 ### Find Sheet Index of Results Tab and make it the active sheet
 for i, sht_name in enumerate(wb.sheetnames):
-	if sht_name == 'Results':
+	if sht_name == 'Live':
 		wb.active = i
 
 ### Set all other sheets to not-active
 for sheet in wb.sheetnames:
-	if sheet != 'Results':
+	if sheet != 'Live':
 		wb[sheet].sheet_view.tabSelected = False
 	
 wb.save(excel_filename)
