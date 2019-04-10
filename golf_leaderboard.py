@@ -14,9 +14,9 @@ excel_folder = 'C:\\Stuff\\pools\\Golf\\'
 
 
 ### Placeholder while testing code
-tid = '041'  # The Masters  'tid' for PGA.com
+tid = '014'  # The Masters  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
-url = 'https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(tid)
+url = 'https://statdata.pgatour.com/r/{}/2017/leaderboard-v2mini.json'.format(tid)
 res = requests.get(url)
 
 ### parses json code into python data format (Dictionaries and Lists)
@@ -61,7 +61,7 @@ tname = tournament_details['tournament_name']
 tyear = tournament_details['start_date'][:4]
 
 ### For Testing Purposes
-testing = True
+testing = False
 
 if testing:
 	print('Testing = True')
@@ -151,8 +151,7 @@ excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
 details_tab = 'Details'
 raw_data_tab = 'Raw Data'
 template_filename = 'Leaderboard_Template.xlsx'
-print('Current Dir: {}'.format(os.getcwd()))
-print(excel_filename)
+
 
 ### Check if file and sheet exist. If no, create file and/or sheet as needed
 if os.path.isfile(excel_filename):
@@ -199,7 +198,7 @@ for sheet in wb.sheetnames:
 		wb[sheet].sheet_view.tabSelected = False
 	
 wb.save(excel_filename)
-print('Data written to: {}'.format(excel_filename))
+print('\nData written to: {}\n'.format(excel_filename))
 
 
 '''
