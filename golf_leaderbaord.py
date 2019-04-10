@@ -60,6 +60,13 @@ tournament_headers = tournament_details.keys()
 tname = tournament_details['tournament_name']
 tyear = tournament_details['start_date'][:4]
 
+### For Testing Purposes
+testing = True
+
+if testing:
+	print('Testing = True')
+	tname = 'Testing ' + tname
+
    ######## ################## ########
 
 
