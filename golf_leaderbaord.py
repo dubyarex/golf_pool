@@ -14,7 +14,7 @@ excel_folder = 'C:\\Stuff\\pools\\Golf\\'
 
 
 ### Placeholder while testing code
-tid = '014'  # The Masters  'tid' for PGA.com
+tid = '041'  # The Masters  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
 url = 'https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(tid)
 res = requests.get(url)
