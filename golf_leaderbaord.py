@@ -12,6 +12,7 @@ excel_folder = 'C:\\Stuff\\pools\\Golf\\'
 ### Have user choose which tournament to update
 # tournament_name = input('Enter Desired Tournament: ')
 
+
 ### Placeholder while testing code
 tid = '014'  # The Masters  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
@@ -23,7 +24,7 @@ data = json.loads(res.text)
 
 leaderboard = data['leaderboard']
 
-   ######## Tournament Detials ########
+   ######## Tournament Details ########
 
 ### List of desired tournament detail fields
 # print(leaderboard.key())  # To see all possible fields
@@ -51,6 +52,10 @@ for i in course_sub_headers:
 for i in cutline_sub_headers:
 	tournament_details[i] = leaderboard['cut_line'][i]
 
+### penalty score for WD, CUT, MDF
+penalty_score = 78
+tournament_details['penalty_score'] = penalty_score
+
 tournament_headers = tournament_details.keys()
 tname = tournament_details['tournament_name']
 tyear = tournament_details['start_date'][:4]
@@ -59,7 +64,7 @@ tyear = tournament_details['start_date'][:4]
 
 
 
-   ######## Player Detials ########
+   ######## Player Details ########
 
 ### List of desired player detail fields
 player_headers = ['current_position', 'start_position', 'status', 'thru', 
@@ -91,10 +96,24 @@ for player in leaderboard['players']:
 	player_details['short_name'] = player['player_bio']['short_name'] + '. ' + player['player_bio']['last_name']
 	player_details['name'] = player['player_bio']['first_name'] + ' ' + player['player_bio']['last_name']
 
-	### Could add code to adjust scores for players with status = ['wd', 'cut', 'mdf']
-
 	player_list.append(player_details)
 
+	### Could add code to adjust scores for players with status = ['wd', 'cut', 'mdf']
+	round_scores = ['r4_strokes', 'r3_strokes', 'r2_strokes', 'r1_strokes'] 
+	for player in player_list:
+		### adjust scores for players who Withdraw
+		if player['status'] == 'wd':
+			for score in round_scores:
+				if player[score] == None:
+					player[score] = penalty_score
+				player[score] = max(player[score], penalty_score)
+		### adjust scoares for Cut players		
+		if player['status'] == 'cut':
+			player['r3_strokes'] = penalty_score
+			player['r4_strokes'] = penalty_score
+		### adjust scores for Made Cut, DNF
+		if player['status'] == 'mdf':
+			player['r4_strokes'] = penalty_score
 	### append to player_list as a dictionary
 
 
@@ -113,6 +132,7 @@ raw_data_columns = ['name',
                     'total_strokes', 
                     'current_round', 
                     'status', 
+                    'course_hole',
                     'r1_tee_time', 
                     'r2_tee_time', 
                     'r3_tee_time', 
@@ -141,7 +161,7 @@ else:
 	sheet.title = raw_data_tab
 	wb.create_sheet(details_tab)
 
-### Add tournament details to Detials sheet
+### Add tournament details to Details sheet
 sheet = wb[details_tab]
 
 row_num = 1
