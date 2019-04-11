@@ -5,29 +5,47 @@ from pprint import pprint
 from openpyxl.utils import get_column_letter, column_index_from_string
 from openpyxl.styles import Alignment, Font, Protection
 
-### Store pool excel workbook here
-excel_folder = 'C:\\Stuff\\pools\\Golf\\'
 
+    ###### For Testing Purposes ######
+testing = False
+
+if testing:
+	print('Testing = True')
+	tname = 'Testing ' + tname
+
+    ###### #################### ######
+
+
+
+    ###### User given variales ######
 
 ### Have user choose which tournament to update
 # tournament_name = input('Enter Desired Tournament: ')
 
-
+### Store pool excel workbook here
+excel_folder = 'C:\\Stuff\\pools\\Golf\\'
+### penalty score for WD, CUT, MDF
+penalty_score = 78
 ### Placeholder while testing code
-tid = '014'  # The Masters  'tid' for PGA.com
+tid = '041'  # The Masters  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
-url = 'https://statdata.pgatour.com/r/{}/2017/leaderboard-v2mini.json'.format(tid)
-res = requests.get(url)
+url = 'https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(tid)
 
+    ###### ################### ######
+
+
+    ###### Get the data ######
+
+res = requests.get(url)
 ### parses json code into python data format (Dictionaries and Lists)
 data = json.loads(res.text)
 
 leaderboard = data['leaderboard']
 
-   ######## Tournament Details ########
+    ######## Tournament Details ########
 
 ### List of desired tournament detail fields
-# print(leaderboard.key())  # To see all possible fields
+# print(leaderboard.key())  # uncomment To see all possible fields
 leaderboard_headers = ['tournament_id', 'tournament_name', 'start_date', 
                        'end_date', 'is_started', 'is_finished', 'current_round', 
                        'round_state']
@@ -51,27 +69,46 @@ for i in course_sub_headers:
 ### Add cutline_sub_headers
 for i in cutline_sub_headers:
 	tournament_details[i] = leaderboard['cut_line'][i]
-
-### penalty score for WD, CUT, MDF
-penalty_score = 78
+### Add user define values
 tournament_details['penalty_score'] = penalty_score
+
 
 tournament_headers = tournament_details.keys()
 tname = tournament_details['tournament_name']
 tyear = tournament_details['start_date'][:4]
 
-### For Testing Purposes
-testing = False
 
-if testing:
-	print('Testing = True')
-	tname = 'Testing ' + tname
-
-   ######## ################## ########
+    ######## ################## ########
 
 
+    ######## Check for Withdraws ########
+prior_wd = {}
 
-   ######## Player Details ########
+excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
+details_tab = 'Details'
+raw_data_tab = 'Raw Data'
+template_filename = 'Leaderboard_Template.xlsx'
+
+
+### Check if file exist. If yes find any 'wd#' statuses and add to prior_wd 
+###   where prior_wd['short_name'] = 'wd' + current_round
+if os.path.isfile(excel_filename):
+	wb = openpyxl.load_workbook(excel_filename)
+	sheet = wb[raw_data_tab]
+	for header in sheet[1]:
+		if header.value == 'status':
+			status_col = get_column_letter(header.column)
+	for status in sheet[status_col]:
+		if status.value[:2] == 'wd':
+			pwd = sheet['A' + str(status.row)].value
+			print('{} withdrew from tournament. Double check scores'.format(pwd))
+			prior_wd[pwd] = status.value
+	wb.close()
+print(prior_wd)
+    ######## ################## ########
+
+
+    ######## Player Details ########
 
 ### List of desired player detail fields
 player_headers = ['current_position', 'start_position', 'status', 'thru', 
@@ -122,7 +159,8 @@ for player in leaderboard['players']:
 		### adjust scores for Made Cut, DNF
 		if player['status'] == 'mdf':
 			player['r4_strokes'] = penalty_score
-	
+
+
 
 
 player_columns = player_list[0].keys()
@@ -146,12 +184,8 @@ raw_data_columns = ['name',
                     'r3_tee_time', 
                     'r4_tee_time']
 
-   ######## ############## ########
+    ######## ############## ########
 
-excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
-details_tab = 'Details'
-raw_data_tab = 'Raw Data'
-template_filename = 'Leaderboard_Template.xlsx'
 
 
 ### Check if file and sheet exist. If no, create file and/or sheet as needed
