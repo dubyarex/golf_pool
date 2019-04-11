@@ -1,6 +1,7 @@
 #! C:\Anaconda3\envs\py3\python
 
-import requests, json, sys, os, openpyxl
+import requests, json, sys, os, openpyxl, get_picks
+import pandas as pd
 from pprint import pprint
 from openpyxl.utils import get_column_letter, column_index_from_string
 from openpyxl.styles import Alignment, Font, Protection
@@ -16,23 +17,48 @@ if testing:
     ###### #################### ######
 
 
-
     ###### User given variales ######
 
 ### Have user choose which tournament to update
 # tournament_name = input('Enter Desired Tournament: ')
 
 ### Store pool excel workbook here
-excel_folder = 'C:\\Stuff\\pools\\Golf\\'
+excel_folder = 'C:\\Stuff\\Pools\\Golf\\'
 ### penalty score for WD, CUT, MDF
 penalty_score = 78
 ### Placeholder while testing code
-tid = '041'  # The Masters  'tid' for PGA.com
+tid = '014'  # The Masters  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
 url = 'https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(tid)
 
+live_tab = 'Live'
+details_tab = 'Details'
+raw_data_tab = 'Raw Data'
+
+template_filename = 'Leaderboard_Template.xlsx'
+
     ###### ################### ######
 
+    ###### Picks ######
+
+picks_file = excel_folder + 'Masters Challenge 2019 - Picks.csv'
+
+pick_data = get_picks.from_csv(picks_file)
+
+picks = []
+for row, values in enumerate(pick_data):
+	if row > 0:
+		pool = {}
+		for i, column in enumerate(values):
+			pool[pick_data[0][i]] = column
+			# else:
+			# 	short_name = column[0] + '. ' + ''.join(column.split()[1:])
+			# 	pool[pick_data[0][i]] = short_name
+
+		picks.append(pool)
+
+
+    ###### ##### ######
 
     ###### Get the data ######
 
@@ -72,38 +98,40 @@ for i in cutline_sub_headers:
 ### Add user define values
 tournament_details['penalty_score'] = penalty_score
 
-
-tournament_headers = tournament_details.keys()
-tname = tournament_details['tournament_name']
-tyear = tournament_details['start_date'][:4]
-
-
     ######## ################## ########
 
 
-    ######## Check for Withdraws ########
-prior_wd = {}
+    ###### Tournament Data Derived variables ######
 
+tournament_headers = tournament_details.keys()
+
+tname = tournament_details['tournament_name']
+tyear = tournament_details['start_date'][:4]
 excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
-details_tab = 'Details'
-raw_data_tab = 'Raw Data'
-template_filename = 'Leaderboard_Template.xlsx'
 
+    ###### Tournament Data Derived variables ######
+
+
+    ######## Check for Withdraws ########
 
 ### Check if file exist. If yes find any 'wd#' statuses and add to prior_wd 
 ###   where prior_wd['short_name'] = 'wd' + current_round
+prior_wd = {}
+
 if os.path.isfile(excel_filename):
 	wb = openpyxl.load_workbook(excel_filename)
 	sheet = wb[raw_data_tab]
 	for header in sheet[1]:
 		if header.value == 'status':
-			status_col = get_column_letter(header.column)
+			status_col = header.column
 	for status in sheet[status_col]:
 		if status.value[:2] == 'wd':
 			pwd = sheet['A' + str(status.row)].value
 			print('{} withdrew from tournament. Double check scores'.format(pwd))
 			prior_wd[pwd] = status.value
 	wb.close()
+
+print('List of Prior Withdraws:')
 print(prior_wd)
     ######## ################## ########
 
@@ -140,27 +168,76 @@ for player in leaderboard['players']:
 	player_details['short_name'] = player['player_bio']['short_name'] + '. ' + player['player_bio']['last_name']
 	player_details['name'] = player['player_bio']['first_name'] + ' ' + player['player_bio']['last_name']
 
+	### create 'adj_status'
+	### Check for previous 'wd#'
+	if player_details['name'] in prior_wd.keys():
+		player_details['status'] = prior_wd[player_details['name']]
+	### Identify NEW 'wd's	
+	if player_details['status'] == 'wd':
+		player_details['status'] = player_details['status'] + str(tournament_details['current_round'])
+	else:
+		player_details['status'] = player_details['status']
+	### Alternate to the above:
+	### Adjust 'status' of 'wd' Look to drop the 'adj_status' values and just change 'status' in place for 'wd's
+
+
 	### append to player_list as a dictionary
 	player_list.append(player_details)
+
+		    ######## Score Adjustments ########
 
 	### Could add code to adjust scores for players with status = ['wd', 'cut', 'mdf']
 	round_scores = ['r4_strokes', 'r3_strokes', 'r2_strokes', 'r1_strokes'] 
 	for player in player_list:
 		### adjust scores for players who Withdraw
-		if player['status'] == 'wd':
+		if player['status'][:2] == 'wd':
 			for score in round_scores:
+				### If player has withdrawn, all None values = penalty score
+				### All unstarted rounds would be None so set to penalty
 				if player[score] == None:
 					player[score] = penalty_score
-				player[score] = max(player[score], penalty_score)
+				### If Rd# is = wd# -- 
+				### r#_strokes = Higher of(r#_strokes or penalty)score
+				### That is to say if they took more strokes on that day than 
+				### the penalty score, they keep their higher score
+				if int(score[1]) == int(player['status'][-1]):
+
+					player[score] = max(player[score], penalty_score)
+				### Else (Rd# < wd#), keep score unchanged
+			player['total_strokes'] = sum(player[score] for score in round_scores)
+			player['total'] = player['total_strokes'] - (4 * int(tournament_details['par_total']))
 		### adjust scoares for Cut players		
 		if player['status'] == 'cut':
 			player['r3_strokes'] = penalty_score
 			player['r4_strokes'] = penalty_score
+			player['total_strokes'] = sum(player[score] for score in round_scores)
+			player['total'] = player['total_strokes'] - (4 * int(tournament_details['par_total']))
 		### adjust scores for Made Cut, DNF
 		if player['status'] == 'mdf':
 			player['r4_strokes'] = penalty_score
+			player['total_strokes'] = sum(player[score] for score in round_scores)
+			player['total'] = player['total_strokes'] - (4 * int(tournament_details['par_total']))
+
+		    ######## ################# ########
+
+    ######## ############## ########
+
+    ######## Pools Total Scores ########
 
 
+pick_num = (list(picks[0].keys()))
+pick_num.pop(0)
+for pool in picks:
+	total_value = 0
+	for pick in pick_num:
+		for player in player_list:
+			if player['short_name'] == pool[pick]:
+				total_value += player['total']
+	pool['Total Score'] = total_value
+
+print(picks[0])
+picks = sorted(picks, key = lambda pool: pool['Total Score'])
+print(picks[0].keys())
 
 
 player_columns = player_list[0].keys()
@@ -217,20 +294,38 @@ sheet = wb[raw_data_tab]
 ### Header Row
 for col, header in enumerate(raw_data_columns):
 	sheet.cell(row=1, column=(col + 1)).value = header
-
+### Player Data
 for row, player in enumerate(player_list):
 	for col, header in enumerate(raw_data_columns):
 		sheet.cell(row=(row+2), column=(col+1)).value = player[header]
 
-### Find Sheet Index of Results Tab and make it the active sheet
+### Update Live Tab
+sheet = wb[live_tab]
+for col, header in enumerate(picks[0].keys()):
+	if header != 'Total Score':
+		sheet.cell(row=3, column=(col + 1)).value = header
+	else:
+		sheet.cell(row=3, column=(col + 2)).value = header
+
+for row, name in enumerate(picks):
+	for col, header in enumerate(picks[0].keys()):
+		if header != 'Total Score':
+			sheet.cell(row=(row+4), column=(col+1)).value = name[header]
+		else:
+			sheet.cell(row=(row+4), column=(col+2)).value = name[header]
+
+
+### Find Sheet Index of Live Tab and make it the active sheet
 for i, sht_name in enumerate(wb.sheetnames):
-	if sht_name == 'Live':
+	if sht_name == live_tab:
 		wb.active = i
 
 ### Set all other sheets to not-active
 for sheet in wb.sheetnames:
-	if sheet != 'Live':
+	if sheet != live_tab:
 		wb[sheet].sheet_view.tabSelected = False
+
+
 	
 wb.save(excel_filename)
 print('\nData written to: {}\n'.format(excel_filename))
