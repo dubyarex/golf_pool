@@ -98,7 +98,7 @@ for i in cutline_sub_headers:
 	tournament_details[i] = leaderboard['cut_line'][i]
 ### Add user define values
 tournament_details['penalty_score'] = penalty_score
-tournament_details['update_time'] = data['last_updated']
+tournament_details['update_time'] = datetime.datetime.strptime(data['last_updated'], '%Y-%m-%dT%H:%M:%S')
 
     ######## ################## ########
 
@@ -316,7 +316,8 @@ for row, name in enumerate(picks):
 			sheet.cell(row=(row+4), column=(col+1)).value = name[header]
 		else:
 			sheet.cell(row=(row+4), column=(col+2)).value = name[header]
-
+### Add update time to Live sheet, cell 'J3'
+sheet.cell(row=(3), column=(10)).value = tournament_details['update_time']
 
 ### Find Sheet Index of Live Tab and make it the active sheet
 for i, sht_name in enumerate(wb.sheetnames):
@@ -332,7 +333,7 @@ for sheet in wb.sheetnames:
 	
 wb.save(excel_filename)
 print('\nData written to: {}\n'.format(excel_filename))
-print('Scored updated as of -- {}'.format(datetime.datetime.strptime(tournament_details['update_time'], '%Y-%m-%dT%H:%M:%S')))
+print('Scores updated as of -- {}'.format(tournament_details['update_time']))
 print('Script run at -- {}'.format(time.ctime()))
 
 
