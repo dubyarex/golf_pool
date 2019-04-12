@@ -98,6 +98,7 @@ for i in cutline_sub_headers:
 	tournament_details[i] = leaderboard['cut_line'][i]
 ### Add user define values
 tournament_details['penalty_score'] = penalty_score
+tournament_details['update_time'] = data['last_updated']
 
     ######## ################## ########
 
