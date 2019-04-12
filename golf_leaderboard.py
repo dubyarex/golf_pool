@@ -1,6 +1,6 @@
 #! C:\Anaconda3\envs\py3\python
 
-import requests, json, sys, os, openpyxl, get_picks
+import requests, json, sys, os, openpyxl, get_picks, time
 import pandas as pd
 from pprint import pprint
 from openpyxl.utils import get_column_letter, column_index_from_string
@@ -124,7 +124,10 @@ if os.path.isfile(excel_filename):
 	sheet = wb[raw_data_tab]
 	for header in sheet[1]:
 		if header.value == 'status':
-			status_col = header.column
+			if type(header.column) is int:
+				status_col = get_column_letter(header.column)
+			else:
+				status_col = header.column
 	for status in sheet[status_col]:
 		if status.value[:2] == 'wd':
 			pwd = sheet['A' + str(status.row)].value
@@ -236,9 +239,7 @@ for pool in picks:
 				total_value += player['total']
 	pool['Total Score'] = total_value
 
-print(picks[0])
 picks = sorted(picks, key = lambda pool: pool['Total Score'])
-print(picks[0].keys())
 
 
 player_columns = player_list[0].keys()
@@ -330,6 +331,7 @@ for sheet in wb.sheetnames:
 	
 wb.save(excel_filename)
 print('\nData written to: {}\n'.format(excel_filename))
+print('Script run at -- {}'.format(time.ctime()))
 
 
 '''
