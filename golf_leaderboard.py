@@ -1,6 +1,6 @@
 #! C:\Anaconda3\envs\py3\python
 
-import requests, json, sys, os, openpyxl, get_picks, time
+import requests, json, sys, os, openpyxl, get_picks, time, datetime
 import pandas as pd
 from pprint import pprint
 from openpyxl.utils import get_column_letter, column_index_from_string
@@ -332,6 +332,7 @@ for sheet in wb.sheetnames:
 	
 wb.save(excel_filename)
 print('\nData written to: {}\n'.format(excel_filename))
+print('Scored updated as of -- {}'.format(datetime.datetime.strptime(tournament_details['update_time'], '%Y-%m-%dT%H:%M:%S')))
 print('Script run at -- {}'.format(time.ctime()))
 
 
