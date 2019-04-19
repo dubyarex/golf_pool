@@ -68,6 +68,7 @@ pga_tournament_list = [['002', 'Desert Classic', '2019'],
 
 ### Use below to Index by 'tid'
 tlist_df = pd.DataFrame(pga_tournament_list, columns=['tid', 'tname', 'tyear']).set_index('tid')
+tlist_df.to_csv('list_of_tournaments.csv')
 
 
 ##### examples of how to accest data in the tlist_df DataFrame #####
