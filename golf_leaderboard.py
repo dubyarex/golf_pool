@@ -346,7 +346,9 @@ print('\nData written to: {}\n'.format(excel_filename))
 print('Scores updated as of -- {}'.format(tournament_details['update_time']))
 print('Script run at -- {}'.format(time.ctime()))
 
-
+pprint(picks[0])
+pprint(tournament_details)
+pprint(player_list[0])
 
 '''
 ### Get Dictionary for Desired Tournament
