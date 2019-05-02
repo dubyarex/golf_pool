@@ -112,6 +112,8 @@ tname = tournament_details['tournament_name']
 tyear = tournament_details['start_date'][:4]
 excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
 
+tournament_details['tournament_key'] = '{} -- {}'.format(tname, tyear)
+
     ###### Tournament Data Derived variables ######
 
 
@@ -349,6 +351,13 @@ print('Script run at -- {}'.format(time.ctime()))
 pprint(picks[0])
 pprint(tournament_details)
 pprint(player_list[0])
+
+tournaments = []
+tournament_details['players'] = player_list
+tournaments.append(tournament_details)
+
+with open('tournaments.json', 'w') as fout:
+    json.dump(tournaments, fout, default=str)
 
 '''
 ### Get Dictionary for Desired Tournament
