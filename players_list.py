@@ -84,6 +84,63 @@ def add_rankings(data):
     return rankedlist
 
 
+def get_field(tid):
+    url = 'https://statdata.pgatour.com/r/{}/field.json'.format(tid)
+    res = requests.get(url)
+    data = json.loads(res.text)
+    print(f'Field for {data["Tournament"]["yyyy"]} -- {data["Tournament"]["TournamentName"]}')
+    field = data["Tournament"]["Players"]
+    player_list = []
+    for player in field:
+        details = {}
+        details["player_id"] = player["TournamentPlayerId"]
+        details["short_name"] = player["ShortName"]
+        details["last_name"] = player["PlayerName"].split(',')[0]
+        player_list.append(details)
+    return player_list
+
+def rank_field(data):
+    rankings_data = get_rankings()
+    rankings = rankings_data['tours'][0]['years'][0]['stats'][0]['details']
+    player_list = []
+    for player in data:
+        player['rankings'] = {}
+        player['rankings']['cur_rank'] = 999
+        for rank in rankings:
+            if rank['plrNum'] == player['player_id']:
+                player['rankings']['cur_rank'] = int(rank['curRank'])
+        player_list.append(player)
+    ranked_list = sorted(player_list, key=lambda player: int(player['rankings']['cur_rank']))
+    for player in ranked_list:
+        if player['rankings']['cur_rank'] == 999:
+            player['rankings']['cur_rank'] = None
+    return ranked_list
+
+
+    # players_data = data['leaderboard']['players']
+    # rankings_data = get_rankings()
+    # rankings = rankings_data['tours'][0]['years'][0]['stats'][0]['details']
+    # playerlist = []
+    # for entry in players_data:
+    #     first_initial = entry['player_bio']['short_name']
+    #     last_name = entry['player_bio']['last_name']
+    #     short_name = f'{first_initial}. {last_name}'
+    #     player_id = entry['player_id']
+    #     player_info = {}
+    #     player_info['player_id'] = player_id
+    #     player_info['short_name'] = short_name
+    #     player_info['cur_rank'] = 999
+    #     for rank in rankings:
+    #         if rank['plrNum'] == player_id:
+    #             player_info['cur_rank'] = int(rank['curRank'])
+    #     playerlist.append(player_info)
+    # rankedlist = sorted(playerlist, key=lambda player_info: int(player_info['cur_rank']))
+    # for i in rankedlist:
+    #     if i['cur_rank'] == 999:
+    #         i['cur_rank'] = None
+    # return rankedlist
+
+
 # def get_players(data):
 #     players_data = data['leaderboard']['players']
 #     rankings_data = get_rankings()
@@ -116,10 +173,25 @@ def add_rankings(data):
 # print(remainder_chop(test, 6, 10))
 
 
-wfg_id = get_tid()
-wfg_data = get_tournament(wfg_id)
-# player_groups = remainder_chop(get_players(wfg_data), 6, 10)
-wfg_ranked = add_rankings(wfg_data)
+# wfg_id = get_tid()
+# wfg_data = get_tournament(wfg_id)
 
-pprint(wfg_data['leaderboard']['players'][0]['rankings'])
-pprint(wfg_ranked[1]['rankings'])
+# wfg_ranked = add_rankings(wfg_data)
+# player_groups = remainder_chop(wfg_ranked, 6, 10)
+
+# pprint(get_field("033"))
+
+ranked_field = rank_field(get_field("033"))
+
+# pprint(remainder_chop(ranked_field, 6, 10))
+chopped = remainder_chop(ranked_field, 6, 10)
+
+for split in chopped:
+    print("Group **")
+    for player in split:
+        print(f'{player["short_name"]}. {player["last_name"]}; {player["rankings"]["cur_rank"]}')
+
+
+# pprint(wfg_data['leaderboard']['players'][0]['rankings'])
+# pprint(wfg_ranked[1]['rankings'])
+
