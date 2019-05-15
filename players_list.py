@@ -117,55 +117,6 @@ def rank_field(data):
     return ranked_list
 
 
-    # players_data = data['leaderboard']['players']
-    # rankings_data = get_rankings()
-    # rankings = rankings_data['tours'][0]['years'][0]['stats'][0]['details']
-    # playerlist = []
-    # for entry in players_data:
-    #     first_initial = entry['player_bio']['short_name']
-    #     last_name = entry['player_bio']['last_name']
-    #     short_name = f'{first_initial}. {last_name}'
-    #     player_id = entry['player_id']
-    #     player_info = {}
-    #     player_info['player_id'] = player_id
-    #     player_info['short_name'] = short_name
-    #     player_info['cur_rank'] = 999
-    #     for rank in rankings:
-    #         if rank['plrNum'] == player_id:
-    #             player_info['cur_rank'] = int(rank['curRank'])
-    #     playerlist.append(player_info)
-    # rankedlist = sorted(playerlist, key=lambda player_info: int(player_info['cur_rank']))
-    # for i in rankedlist:
-    #     if i['cur_rank'] == 999:
-    #         i['cur_rank'] = None
-    # return rankedlist
-
-
-# def get_players(data):
-#     players_data = data['leaderboard']['players']
-#     rankings_data = get_rankings()
-#     rankings = rankings_data['tours'][0]['years'][0]['stats'][0]['details']
-#     playerlist = []
-#     for entry in players_data:
-#         first_initial = entry['player_bio']['short_name']
-#         last_name = entry['player_bio']['last_name']
-#         short_name = f'{first_initial}. {last_name}'
-#         player_id = entry['player_id']
-#         player_info = {}
-#         player_info['player_id'] = player_id
-#         player_info['short_name'] = short_name
-#         player_info['cur_rank'] = 999
-#         for rank in rankings:
-#             if rank['plrNum'] == player_id:
-#                 player_info['cur_rank'] = int(rank['curRank'])
-#         playerlist.append(player_info)
-#     rankedlist = sorted(playerlist, key=lambda player_info: int(player_info['cur_rank']))
-#     for i in rankedlist:
-#         if i['cur_rank'] == 999:
-#             i['cur_rank'] = None
-#     return rankedlist
-
-
 # test = []
 # for i in range(100):
 #     test.append(i + 1)
