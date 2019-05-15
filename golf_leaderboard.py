@@ -30,7 +30,7 @@ penalty_score = 78
 ### Placeholder while testing code
 tid = '033'  # The Masters  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
-url = 'https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(tid)
+url = f'https://statdata.pgatour.com/r/{tid}/leaderboard-v2mini.json'
 
 live_tab = 'Live'
 details_tab = 'Details'
@@ -40,27 +40,6 @@ template_filename = 'Leaderboard_Template.xlsx'
 
     ###### ################### ######
 
-    ###### Picks ######
-
-picks_file = excel_folder + 'Masters Challenge 2019 - Picks.csv'
-
-pick_data = get_picks.from_csv(picks_file)
-
-picks = []
-for row, values in enumerate(pick_data):
-    if row > 0:
-        pool = {}
-        for i, column in enumerate(values):
-            if i == 0:
-                pool[pick_data[0][i]] = column
-            else:
-                short_name = column[0] + '. ' + ''.join(column.split()[1:])
-                pool[pick_data[0][i]] = short_name
-
-        picks.append(pool)
-
-
-    ###### ##### ######
 
     ###### Get the data ######
 
@@ -110,11 +89,34 @@ tournament_headers = tournament_details.keys()
 
 tname = tournament_details['tournament_name']
 tyear = tournament_details['start_date'][:4]
-excel_filename = '{}{} -- {}.xlsx'.format(excel_folder, tname, tyear)
+excel_filename = f'{excel_folder}{tname} -- {tyear}.xlsx'
 
-tournament_details['tournament_key'] = '{} -- {}'.format(tname, tyear)
+tournament_details['tournament_key'] = f'{tname} -- {tyear}'
 
     ###### Tournament Data Derived variables ######
+
+
+    ###### Picks ######
+
+picks_filename = f'{tname} {tyear} - Picks.csv'
+picks_file = f'{excel_folder}{tname} {tyear} - Picks.csv'
+
+pick_data = get_picks.from_csv(picks_file)
+
+picks = []
+for row, values in enumerate(pick_data):
+    if row > 0:
+        pool = {}
+        for i, column in enumerate(values):
+            if i == 0:
+                pool[pick_data[0][i]] = column
+            else:
+                short_name = column[0] + '. ' + ''.join(column.split()[1:])
+                pool[pick_data[0][i]] = short_name
+
+        picks.append(pool)
+
+    ###### ##### ######
 
 
     ######## Check for Withdraws ########
@@ -135,7 +137,7 @@ if os.path.isfile(excel_filename):
     for status in sheet[status_col]:
         if status.value[:2] == 'wd':
             pwd = sheet['A' + str(status.row)].value
-            print('{} withdrew from tournament. Double check scores'.format(pwd))
+            print(f'{pwd} withdrew from tournament. Double check scores')
             prior_wd[pwd] = status.value
     wb.close()
 
@@ -344,9 +346,9 @@ for sheet in wb.sheetnames:
 
 
 wb.save(excel_filename)
-print('\nData written to: {}\n'.format(excel_filename))
-print('Scores updated as of -- {}'.format(tournament_details['update_time']))
-print('Script run at -- {}'.format(time.ctime()))
+print(f'\nData written to: {excel_filename}\n')
+print(f'Scores updated as of -- {tournament_details["update_time"]}')
+print(f'Script run at -- {time.ctime()}')
 
 pprint(picks[0])
 pprint(tournament_details)
