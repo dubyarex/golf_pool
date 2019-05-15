@@ -28,7 +28,7 @@ excel_folder = 'C:\\Stuff\\Pools\\Golf\\'
 ### penalty score for WD, CUT, MDF
 penalty_score = 78
 ### Placeholder while testing code
-tid = '014'  # The Masters  'tid' for PGA.com
+tid = '033'  # The Masters  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
 url = 'https://statdata.pgatour.com/r/{}/leaderboard-v2mini.json'.format(tid)
 
