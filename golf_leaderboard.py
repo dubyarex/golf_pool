@@ -100,7 +100,7 @@ tournament_details['tournament_key'] = f'{tname} -- {tyear}'
 
 ### pick file is tournament and year specfic
 picks_filename = f'{tname} {tyear} - Picks.csv'
-picks_file = f'{excel_folder}{tname} {tyear} - Picks.csv'
+picks_file = f'{excel_folder}{picks_filename}'
 
 pick_data = get_picks.from_csv(picks_file)
 
@@ -335,7 +335,7 @@ for row, name in enumerate(picks):
             live_row.append(name[header])
     live_table.append(live_row)
 ### Add update time to Live sheet, cell 'J3'
-sheet.cell(row=(3), column=(10)).value = tournament_details['update_time']
+# sheet.cell(row=(3), column=(10)).value = tournament_details['update_time']
 
 ### Find Sheet Index of Live Tab and make it the active sheet
 for i, sht_name in enumerate(wb.sheetnames):
