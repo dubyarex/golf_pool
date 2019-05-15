@@ -28,7 +28,7 @@ excel_folder = 'C:\\Stuff\\Pools\\Golf\\'
 ### penalty score for WD, CUT, MDF
 penalty_score = 78
 ### Placeholder while testing code
-tid = '033'  # The Masters  'tid' for PGA.com
+tid = '033'  # The PGA Championship  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
 url = f'https://statdata.pgatour.com/r/{tid}/leaderboard-v2mini.json'
 
@@ -98,6 +98,7 @@ tournament_details['tournament_key'] = f'{tname} -- {tyear}'
 
     ###### Picks ######
 
+### pick file is tournament and year specfic
 picks_filename = f'{tname} {tyear} - Picks.csv'
 picks_file = f'{excel_folder}{tname} {tyear} - Picks.csv'
 
