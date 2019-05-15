@@ -217,17 +217,20 @@ for player in leaderboard['players']:
                 ### Else (Rd# < wd#), keep score unchanged
             player['total_strokes'] = sum(player[score] for score in round_scores)
             player['total'] = player['total_strokes'] - (4 * int(tournament_details['par_total']))
+            player['today'] = penalty_score - int(tournament_details['par_total'])
         ### adjust scoares for Cut players
         if player['status'] == 'cut':
             player['r3_strokes'] = penalty_score
             player['r4_strokes'] = penalty_score
             player['total_strokes'] = sum(player[score] for score in round_scores)
             player['total'] = player['total_strokes'] - (4 * int(tournament_details['par_total']))
+            player['today'] = penalty_score - int(tournament_details['par_total'])
         ### adjust scores for Made Cut, DNF
         if player['status'] == 'mdf':
             player['r4_strokes'] = penalty_score
             player['total_strokes'] = sum(player[score] for score in round_scores)
             player['total'] = player['total_strokes'] - (4 * int(tournament_details['par_total']))
+            player['today'] = penalty_score - int(tournament_details['par_total'])
 
             ######## ################# ########
 
