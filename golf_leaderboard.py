@@ -335,7 +335,7 @@ for row, name in enumerate(picks):
             live_row.append(name[header])
     live_table.append(live_row)
 ### Add update time to Live sheet, cell 'J3'
-# sheet.cell(row=(3), column=(10)).value = tournament_details['update_time']
+sheet.cell(row=(3), column=(10)).value = tournament_details['update_time']
 
 ### Find Sheet Index of Live Tab and make it the active sheet
 for i, sht_name in enumerate(wb.sheetnames):
@@ -354,9 +354,9 @@ print(f'\nData written to: {excel_filename}\n')
 print(f'Scores updated as of -- {tournament_details["update_time"]}')
 print(f'Script run at -- {time.ctime()}')
 
-pprint(picks[0])
-pprint(tournament_details)
-pprint(player_list[0])
+# pprint(picks[0])
+# pprint(tournament_details)
+# pprint(player_list[0])
 
 tournaments = []
 tournament_details['players'] = player_list

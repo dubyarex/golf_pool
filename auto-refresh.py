@@ -4,12 +4,12 @@ import os, time, subprocess
 from datetime import datetime
 
 
-stoptime = datetime(2019, 4, 14, 20, 15, 0)
+stoptime = datetime(2019, 5, 16, 20, 15, 0)
 
 while stoptime > datetime.now():
 	print(datetime.now())
 	subprocess.Popen(['C:\\Anaconda3\\envs\\py3\\python.exe', 'C:\\Stuff\\Programming\\golf_pool\\golf_leaderboard.py'])
-	time.sleep(300)	
+	time.sleep(300)
 
 print('''
 	********************************************
