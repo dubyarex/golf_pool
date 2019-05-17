@@ -109,11 +109,12 @@ for row, values in enumerate(pick_data):
     if row > 0:
         pool = {}
         for i, column in enumerate(values):
-            if i == 0:
-                pool[pick_data[0][i]] = column
-            else:
-                short_name = column[0] + '. ' + ' '.join(column.split()[1:],)
-                pool[pick_data[0][i]] = short_name
+            pool[pick_data[0][i]] = column
+            # if i == 0:
+            #     pool[pick_data[0][i]] = column
+            # else:
+            #     # short_name = column[0] + '. ' + ' '.join(column.split()[1:],)
+            #     # pool[pick_data[0][i]] = short_name
 
         picks.append(pool)
 
