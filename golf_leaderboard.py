@@ -112,7 +112,7 @@ for row, values in enumerate(pick_data):
             if i == 0:
                 pool[pick_data[0][i]] = column
             else:
-                short_name = column[0] + '. ' + ''.join(column.split()[1:])
+                short_name = column[0] + '. ' + ' '.join(column.split()[1:],)
                 pool[pick_data[0][i]] = short_name
 
         picks.append(pool)
@@ -247,6 +247,13 @@ for pool in picks:
         for player in player_list:
             if player['short_name'] == pool[pick]:
                 total_value += player['total']
+                ### Add Players Scores next to name
+                if player['total'] > 0:
+                    pool[pick] += f' (+{player["total"]})'
+                elif player['total'] == 0:
+                    pool[pick] += f' (E)'
+                else:
+                    pool[pick] += f' ({player["total"]})'
     pool['Total Score'] = total_value
 
 picks = sorted(picks, key = lambda pool: pool['Total Score'])
