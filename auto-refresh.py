@@ -6,7 +6,7 @@ import subprocess
 from datetime import datetime
 
 
-stoptime = datetime(2019, 5, 18, 20, 15, 0)
+stoptime = datetime(2019, 5, 19, 20, 15, 0)
 
 while stoptime > datetime.now():
     print(datetime.now())
