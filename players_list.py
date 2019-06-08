@@ -94,10 +94,11 @@ def get_field(tid):
     for player in field:
         details = {}
         details["player_id"] = player["TournamentPlayerId"]
-        details["short_name"] = player["ShortName"]
+        details["short_name"] = player["PlayerName"].split(',')[1][1]
         details["last_name"] = player["PlayerName"].split(',')[0]
         player_list.append(details)
     return player_list
+
 
 def rank_field(data):
     rankings_data = get_rankings()
@@ -132,7 +133,7 @@ def rank_field(data):
 
 # pprint(get_field("033"))
 
-ranked_field = rank_field(get_field("033"))
+ranked_field = rank_field(get_field("026"))
 
 # pprint(remainder_chop(ranked_field, 6, 10))
 chopped = remainder_chop(ranked_field, 6, 10)
@@ -145,4 +146,3 @@ for split in chopped:
 
 # pprint(wfg_data['leaderboard']['players'][0]['rankings'])
 # pprint(wfg_ranked[1]['rankings'])
-
