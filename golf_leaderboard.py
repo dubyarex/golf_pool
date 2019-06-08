@@ -109,7 +109,7 @@ for row, values in enumerate(pick_data):
     if row > 0:
         pool = {}
         for i, column in enumerate(values):
-            pool[pick_data[0][i]] = column
+            pool['_'.join(pick_data[0][i].split(' '))] = column
             # if i == 0:
             #     pool[pick_data[0][i]] = column
             # else:
@@ -255,9 +255,9 @@ for pool in picks:
                     pool[pick] += f' (E)'
                 else:
                     pool[pick] += f' ({player["total"]})'
-    pool['Total Score'] = total_value
+    pool['Total_Score'] = total_value
 
-picks = sorted(picks, key = lambda pool: pool['Total Score'])
+picks = sorted(picks, key = lambda pool: pool['Total_Score'])
 
 
 player_columns = player_list[0].keys()
@@ -324,18 +324,18 @@ live_table = []
 sheet = wb[live_tab]
 live_row = []
 for col, header in enumerate(picks[0].keys()):
-    if header != 'Total Score':
-        sheet.cell(row=3, column=(col + 1)).value = header
+    if header != 'Total_Score':
+        sheet.cell(row=3, column=(col + 1)).value = header.replace("_", " ")
         live_row.append(header)
     else:
-        sheet.cell(row=3, column=(col + 2)).value = header
+        sheet.cell(row=3, column=(col + 2)).value = header.replace("_", " ")
         live_row.append(header)
 live_table.append(live_row)
 
 for row, name in enumerate(picks):
     live_row = []
     for col, header in enumerate(picks[0].keys()):
-        if header != 'Total Score':
+        if header != 'Total_Score':
             sheet.cell(row=(row+4), column=(col+1)).value = name[header]
             live_row.append(name[header])
         else:
@@ -368,10 +368,13 @@ print(f'Script run at -- {time.ctime()}')
 
 tournaments = []
 tournament_details['players'] = player_list
+tournament_details['picks'] = picks
 tournaments.append(tournament_details)
 
 with open('tournaments.json', 'w') as fout:
     json.dump(tournaments, fout, default=str)
+
+pprint(tournaments)
 
 '''
 ### Get Dictionary for Desired Tournament
