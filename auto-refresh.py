@@ -8,7 +8,7 @@ from datetime import datetime
 
 stoptime = datetime(2019, 6, 13, 22, 15, 0)
 
-Print(f'Auto-refresh will run until {str(stoptime)}')
+print(f'\n\nAuto-refresh will run until {str(stoptime)}\n\n')
 
 while stoptime > datetime.now():
     print(datetime.now())
