@@ -374,7 +374,7 @@ tournaments.append(tournament_details)
 with open('tournaments.json', 'w') as fout:
     json.dump(tournaments, fout, default=str)
 
-pprint(tournaments)
+# pprint(tournaments)
 
 '''
 ### Get Dictionary for Desired Tournament
