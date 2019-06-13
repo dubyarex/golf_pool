@@ -8,6 +8,8 @@ from datetime import datetime
 
 stoptime = datetime(2019, 6, 13, 22, 15, 0)
 
+Print(f'Auto-refresh will run until {str(stoptime)}')
+
 while stoptime > datetime.now():
     print(datetime.now())
     subprocess.Popen(['C:\\Anaconda3\\envs\\py3\\python.exe', 'C:\\Stuff\\Programming\\golf_pool\\golf_leaderboard.py'])
