@@ -133,7 +133,7 @@ def rank_field(data):
 
 # pprint(get_field("033"))
 
-ranked_field = rank_field(get_field("026"))
+ranked_field = rank_field(get_field("100"))
 
 # pprint(remainder_chop(ranked_field, 6, 10))
 chopped = remainder_chop(ranked_field, 6, 10)

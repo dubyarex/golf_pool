@@ -6,7 +6,7 @@ import subprocess
 from datetime import datetime
 
 
-stoptime = datetime(2019, 6, 15, 23, 30, 0)
+stoptime = datetime(2019, 6, 16, 23, 30, 0)
 
 print(f'\n\nAuto-refresh will run until {str(stoptime)}\n\n')
 
