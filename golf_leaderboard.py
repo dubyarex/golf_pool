@@ -371,8 +371,8 @@ tournament_details['players'] = player_list
 tournament_details['picks'] = picks
 tournaments.append(tournament_details)
 
-with open('tournaments.json', 'w') as fout:
-    json.dump(tournaments, fout, default=str)
+# with open('tournaments.json', 'w') as fout:
+#     json.dump(tournaments, fout, default=str)
 
 # pprint(tournaments)
 
