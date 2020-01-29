@@ -28,7 +28,7 @@ excel_folder = 'C:\\Stuff\\Pools\\Golf\\'
 ### penalty score for WD, CUT, MDF
 penalty_score = 78
 ### Placeholder while testing code
-tid = '026'  # The U.S. Open  'tid' for PGA.com
+tid = '100'  # The Open Championship  'tid' for PGA.com
 # PGA.com URL given a tournament ID - 'tid'
 url = f'https://statdata.pgatour.com/r/{tid}/leaderboard-v2mini.json'
 
@@ -371,8 +371,8 @@ tournament_details['players'] = player_list
 tournament_details['picks'] = picks
 tournaments.append(tournament_details)
 
-with open('tournaments.json', 'w') as fout:
-    json.dump(tournaments, fout, default=str)
+# with open('tournaments.json', 'w') as fout:
+#     json.dump(tournaments, fout, default=str)
 
 # pprint(tournaments)
 
