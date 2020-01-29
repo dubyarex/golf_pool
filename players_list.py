@@ -57,9 +57,12 @@ def get_tournament(tid, year=None):
 
 
 def get_rankings():
-    url = 'https://statdata.pgatour.com/r/stats/2019/186.json'
+    url = 'https://statdata.pgatour.com/r/stats/current/186.json'
     res = requests.get(url)
     rankings_data = json.loads(res.text)
+    rank_date = rankings_data['tours'][0]['years'][0]['lastTrnProc']['endDate']
+    rank_tournament = rankings_data['tours'][0]['years'][0]['lastTrnProc']['trnName']
+    print("Rankings as of {} -- (Through {})".format(rank_date, rank_tournament))
     return rankings_data
 
 
@@ -133,14 +136,14 @@ def rank_field(data):
 
 # pprint(get_field("033"))
 
-ranked_field = rank_field(get_field("026"))
+ranked_field = rank_field(get_field("003"))
 
 # pprint(remainder_chop(ranked_field, 6, 10))
 chopped = remainder_chop(ranked_field, 6, 10)
 
-for split in chopped:
-    print("Group **")
-    for player in split:
+for split in enumerate(chopped, 1):
+    print("Group {}".format(str(split[0])))
+    for player in split[1]:
         print(f'{player["short_name"]}. {player["last_name"]}; {player["rankings"]["cur_rank"]}')
 
 
